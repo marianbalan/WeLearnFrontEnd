@@ -1,0 +1,112 @@
+ .tabs {
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+  
+.tab-headers {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.tab-header {
+    background-color: white;
+    width: 10rem;
+    text-align: center;
+    padding: 1rem;
+    border-radius: 1.5rem 1.5rem 0 0;
+    color: #14281f;
+}
+
+.tab-header:hover {
+    cursor: pointer;
+}
+
+.selected-tab {
+    filter: brightness(85%);
+    font-weight: bold;
+}
+
+
+.tab-content {
+    width: 75%;
+}
+
+.container-reg {
+  display: flex;
+  justify-content: space-between;
+  max-width: 100%;
+  background-color: white;
+  min-height: 36.5rem;
+  border-radius: 0 5rem 5rem 5rem;
+}
+
+.left-container {
+  display: block;
+  width: 100%;
+}
+
+.title-container {
+  display: block;
+  width: 100%;
+  margin: auto;
+}
+
+.right-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 89.6rem;
+  border-left: 4px solid #EFF2F1;
+}
+
+/* .root {
+  background-color: #1D4952;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+} */
+  
+.container-main {
+  width: 60rem;
+  padding: 10px;
+  display: block;
+  margin: auto;
+  /* position: absolute;
+  transform: translate(-50%, -50%);
+  top: 55%;
+  left: 50%; */
+}
+
+/* .input-fields-grid {
+  width: 35rem;
+  display: grid;
+  grid-template-columns: auto auto;
+}  */
+
+.button-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon {
+  width: 20rem;
+}
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-error {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}

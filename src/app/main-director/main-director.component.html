@@ -1,0 +1,132 @@
+<div class="container">
+  <div class="container-table">
+    <h1 class="title">Teachers</h1>
+    <p class="subtitle">Manage your school's teachers</p>
+    <table mat-table [dataSource]="teachers" class="table mat-elevation-z8">
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>Email</th>
+        <td mat-cell *matCellDef="let element">{{element.email}}</td>
+      </ng-container>
+      <ng-container matColumnDef="firstName">
+        <th mat-header-cell *matHeaderCellDef>First Name</th>
+        <td mat-cell *matCellDef="let element">{{element.firstName}}</td>
+      </ng-container>
+      <ng-container matColumnDef="lastName">
+        <th mat-header-cell *matHeaderCellDef>Last Name</th>
+        <td mat-cell *matCellDef="let element">{{element.lastName}}</td>
+      </ng-container>
+      <ng-container matColumnDef="phoneNumber">
+        <th mat-header-cell *matHeaderCellDef>Phone Number</th>
+        <td mat-cell *matCellDef="let element">{{element.phoneNumber}}</td>
+      </ng-container>
+      <ng-container matColumnDef="activated">
+        <th mat-header-cell *matHeaderCellDef>Activated</th>
+        <td mat-cell *matCellDef="let element">{{element.activated}}</td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button class="default-btn" (click)="mode='Edit'; openEditTeacher(element)" title="Edit">
+            <mat-icon aria-hidden="false" aria-label="Edit">edit</mat-icon>
+          </button>
+          <button *ngIf="element.id !== getDirectorId()" mat-icon-button class="delete-btn" (click)="openDeleteModal(element)" title="Remove">
+            <mat-icon aria-hidden="false" aria-label="Delete">delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <button class="button" type="button" (click)="mode='Add'; openAddTeacher()">Add teacher</button>
+  </div>
+</div>
+
+<div class="pre-modal" *ngIf="showModal">
+  <div *ngIf="showModal" class="modal">
+    <h1 class="title">{{getModalTitle()}}</h1>
+    <form id="register-form" [formGroup]="addTeacherForm">
+      <div class="input-fields-grid">
+        <div class="input-field">
+          <label class="label-field" for="email">Email</label>
+          <input class="input" formControlName="email" id="email" type="text" placeholder="Email">
+          <div *ngIf="addTeacherForm.get('email')!.invalid && addTeacherForm.get('email')!.errors &&
+            (addTeacherForm.get('email')!.dirty || addTeacherForm.get('email')!.touched)">
+            <small class="text-danger" *ngIf="addTeacherForm.get('email')!.hasError('required')">
+              {{requiredMessage}}
+            </small>
+            <small class="text-danger" *ngIf="addTeacherForm.get('email')!.hasError('pattern')">
+              {{emailMessage}}
+            </small>
+          </div>
+        </div>
+
+        <div class="input-field">
+          <label class="label-field" for="firstName">First Name</label>
+          <input class="input" formControlName="firstName" id="firstName" type="text" placeholder="First Name">
+          <div *ngIf="addTeacherForm.get('firstName')!.invalid && addTeacherForm.get('firstName')!.errors &&
+            (addTeacherForm.get('firstName')!.dirty || addTeacherForm.get('firstName')!.touched)">
+            <small class="text-danger" *ngIf="addTeacherForm.get('firstName')!.hasError('required')">
+              {{requiredMessage}}
+            </small>
+          </div>
+        </div>
+
+        <div class="input-field">
+          <label class="label-field" for="lastName">Last Name</label>
+          <input class="input" formControlName="lastName" id="lastName" type="text" placeholder="Last Name">
+          <div *ngIf="addTeacherForm.get('lastName')!.invalid && addTeacherForm.get('lastName')!.errors &&
+            (addTeacherForm.get('lastName')!.dirty || addTeacherForm.get('lastName')!.touched)">
+            <small class="text-danger" *ngIf="addTeacherForm.get('lastName')!.hasError('required')">
+              {{requiredMessage}}
+            </small>
+          </div>
+        </div>
+
+        <div class="input-field">
+          <label class="label-field" for="pin">Personal Identification Number</label>
+          <input class="input" formControlName="pin" id="pin" type="text" placeholder="Personal Identification Number">
+          <div *ngIf="addTeacherForm.get('pin')!.invalid && addTeacherForm.get('pin')!.errors &&
+            (addTeacherForm.get('pin')!.dirty || addTeacherForm.get('pin')!.touched)">
+            <small class="text-danger" *ngIf="addTeacherForm.get('pin')!.hasError('required')">
+              {{requiredMessage}}
+            </small>
+          </div>
+        </div>
+
+        <div class="input-field">
+          <label class="label-field" for="phoneNumber">Phone Number</label>
+          <input class="input" formControlName="phoneNumber" id="phoneNumber" type="text" placeholder="Phone Number">
+          <div *ngIf="addTeacherForm.get('phoneNumber')!.invalid && addTeacherForm.get('phoneNumber')!.errors &&
+            (addTeacherForm.get('phoneNumber')!.dirty || addTeacherForm.get('phoneNumber')!.touched)">
+            <small class="text-danger" *ngIf="addTeacherForm.get('phoneNumber')!.hasError('required')">
+              {{requiredMessage}}
+            </small>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="buttons">
+      <button class="cancel-btn" type="button" (click)="cancelModal()">
+        Cancel
+      </button>
+      <button class="submit-btn" type="button" (click)="submit()" [disabled]="!addTeacherForm.valid">
+        {{mode}}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="pre-modal" *ngIf="showDeleteModal">
+  <div *ngIf="showDeleteModal" class="modal">
+    <h1 class="title">Delete confirmation</h1>
+    <p class="subtitle">Are you sure you want to delete this item?<br></p>
+    <div class="buttons">
+      <button class="cancel-btn" type="button" (click)="cancelDeleteModal()">
+        No
+      </button>
+      <button class="submit-btn" type="button" (click)="removeTeacher()">
+        Yes
+      </button>
+    </div>
+  </div>
+</div>

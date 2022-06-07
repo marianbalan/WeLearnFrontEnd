@@ -1,0 +1,67 @@
+.root {
+    height: 100%;
+    width: 80%;
+    margin: auto;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: stretch;
+    align-content: stretch;
+}
+  
+#right-container {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    width: 100%;
+}
+
+#sign-in-form {
+    border-radius: 0.8rem;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#left-container {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    width: 100%;
+}
+
+#main-image {
+    max-height: 100%;
+    max-width: 100%;
+    width: 30rem;
+}
+
+.register {
+    display: inline;
+}
+
+.text {
+    margin-left: 1rem;
+    color: #14281f;
+    font-size: 1.5rem;
+}
+  
+.director {
+    font-weight: bold;
+    margin-left: 0.5rem;
+}
+
+.register-button {
+    text-decoration: none;
+    border: 3px solid #f5751d;
+    color: #f5751d;
+    font-size: 1.5rem;
+    border-radius: 3rem;
+    padding: 0.75rem;
+    filter:drop-shadow(0 0 1rem #f5751d);
+}

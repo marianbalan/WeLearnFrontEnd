@@ -1,0 +1,49 @@
+.sidebar {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    overflow: hidden auto;
+    width: 4.5rem;
+    height: calc(100% - 3.5rem);
+    flex-direction: column;
+    background-color: #1f4034;
+    color: #e7e5e9;
+    text-align: center;
+    transition: 0.3s ease-in-out;
+}
+
+.sidebar-button {
+    margin: auto;
+    cursor: pointer;
+}
+
+.content {
+    margin-top: 2rem;
+}
+
+.open-sidebar {
+    width: 15rem;
+}
+
+.header {
+    display: flex;
+    width: 100%;
+    height: 3rem;
+    justify-content: space-between;
+    margin: 0.5rem 0;
+}
+
+.ic-close {
+    content: url('../../../assets/ic-close.png');
+    width: 2rem;
+    height: 2rem;
+    filter: invert(100%);
+    margin-left: 12rem;
+}
+
+.ic-menu {
+    content: url('../../../assets/menu.png');
+    width: 2rem;
+    height: 2rem;
+    filter: invert(100%);
+}

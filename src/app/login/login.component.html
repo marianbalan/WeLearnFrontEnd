@@ -1,0 +1,41 @@
+<div class="root">
+  <div id="left-container" class="container">
+    <img id="main-image" src="../../assets/main.png"/>
+    <div class="register">
+      <h1 class="title">Don't have an account yet?</h1>
+      <a routerLink="/register" class="register-button">REGISTER NOW</a><span class="text">AS<span class="director">DIRECTOR</span></span>
+    </div>
+  </div>
+  <div id="right-container" class="container">
+    <h1 class="title">Authentication</h1>
+      <form id="sign-in-form" [formGroup]="loginForm" (submit)="submit()">
+        <div class="input-field">
+          <label class="label-field" for="email">Email</label>
+          <input class="input" formControlName="email" id="email" type="text" placeholder="Email">
+          <div *ngIf="loginForm.get('email')!.invalid && loginForm.get('email')!.errors &&
+            (loginForm.get('email')!.dirty || loginForm.get('email')!.touched)">
+            <small class="text-danger" *ngIf="loginForm.get('email')!.hasError('required')">
+              {{requiredMessage}}
+            </small>
+            <small class="text-danger" *ngIf="loginForm.get('email')!.hasError('pattern')">
+              {{emailMessage}}
+            </small>
+          </div>
+        </div>
+        <div class="input-field">
+          <label class="label-field" for="password">Password</label>
+          <input class="input" formControlName="password" id="password" type="password" placeholder="Password">
+          <div *ngIf="loginForm.get('password')!.invalid && loginForm.get('password')!.errors &&
+            (loginForm.get('password')!.dirty || loginForm.get('password')!.touched)">
+            <small class="text-danger" *ngIf="loginForm.get('password')!.hasError('required')">
+              {{requiredMessage}}
+            </small>
+          </div>
+        </div>
+        <div *ngIf="invalidLogin" class="text-danger">Invalid email or password!</div>
+        <button class="button" type="submit" [disabled]="!loginForm.valid">LOG IN</button>
+      </form>
+  </div>
+</div>
+
+

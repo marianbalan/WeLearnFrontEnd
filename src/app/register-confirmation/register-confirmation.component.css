@@ -1,0 +1,9 @@
+.registration-info {
+    display: flex;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    flex-flow: column;
+    font-size: 1.1rem;
+    margin-top: 5rem;
+}

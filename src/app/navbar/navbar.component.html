@@ -1,0 +1,23 @@
+<header class="header">
+  <div class="logo">
+    <a class="link" [routerLink]="['/home']">
+      <!-- <img src="assets/logo.png" class="icon-left" style="height: 50px;"> -->
+      <div class="title">{{title}}</div>
+    </a>
+  </div>
+
+  <div class="menu">
+    <div *ngIf="!isLoggedIn" class="menu-item">
+      <a class="link menu-item" [routerLink]="['/register']">
+        <img src="assets/ic-register.png" class="icon" id="ic-login">
+        <div class="menu-text">Register</div>
+      </a>
+    </div>
+    <div *ngIf="isLoggedIn" class="menu-item">
+      <a class="link menu-item" [routerLink]="['/login']" (click)="logout()"> 
+        <img src="assets/ic-logout.png" class="icon" id="ic-logout">
+        <div class="menu-text">Logout</div>
+      </a>
+    </div>
+  </div>
+</header>

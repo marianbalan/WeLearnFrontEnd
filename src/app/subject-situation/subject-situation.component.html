@@ -1,0 +1,188 @@
+<div class="container">
+  <div class="container-table">
+    <h1 class="title">Subject Situation</h1>
+    <p class="subject-name" *ngIf="subject !== undefined">{{subject.name + ' ' + subject.studyGroup.number + subject.studyGroup.name}}</p>
+
+    <div class="situation-navbar">
+      <div [ngClass]="{ 'current-tab': mode === 'grades' }" (click)="mode = 'grades'" class="situation-navbar-element">Grades</div>
+      <div [ngClass]="mode === 'nonAttendances' ? 'current-tab' : ''"(click)="mode = 'nonAttendances'" class="situation-navbar-element">Non Attendances</div>
+    </div>
+
+    <table *ngIf="mode == 'grades'" mat-table [dataSource]="situation!" class="table mat-elevation-z8">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Student
+          <div>
+            <mat-form-field>
+              <input matInput class="form-field" [formControl]="nameFilter" [placeholder]="filterNameMessage">
+            </mat-form-field>
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let element">{{element.user.firstName + ' ' + element.user.lastName}}</td>
+      </ng-container>
+      <ng-container matColumnDef="pin">
+        <th mat-header-cell *matHeaderCellDef>PIN
+          <div>
+            <mat-form-field>
+              <input matInput class="form-field" [formControl]="pinFilter" [placeholder]="filterPinMessage">
+            </mat-form-field>
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let element">{{element.user.pin}}</td>
+      </ng-container>
+      <ng-container matColumnDef="grades">
+        <th mat-header-cell *matHeaderCellDef>Grades</th>
+        <td mat-cell *matCellDef="let element; let i=index">
+          <div class="row-container">
+            <div (click)="openEditGrade(grade, i)" [ngClass]="{ 'grade': isTeachingSubject() }" *ngFor="let grade of element.grades">
+              {{grade.grade}}
+            </div>
+        </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="averageScore">
+        <th mat-header-cell *matHeaderCellDef>Average Score</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="average-container">
+            <div [ngClass]="{ 'not-passing': element.averageScore < 5 }" class="averageScore" *ngIf="element.averageScore !== null">
+              {{element.averageScore}}
+            </div>
+          </div>
+        </td>
+      </ng-container>
+      <ng-container *ngIf="isTeachingSubject()" matColumnDef="add">
+        <th mat-header-cell *matHeaderCellDef>Add</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button class="default-btn" (click)="openAddGrade(element.user)" title="Add">
+            <mat-icon aria-hidden="false" aria-label="Add">note_add</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      
+      <tr mat-header-row *matHeaderRowDef="displayedGradeColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedGradeColumns;"></tr>
+    </table>
+
+    <table *ngIf="mode === 'nonAttendances'" mat-table [dataSource]="situation!" class="table mat-elevation-z8">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Student
+          <div>
+            <mat-form-field>
+              <input matInput class="form-field" [formControl]="nameFilter" [placeholder]="filterNameMessage">
+            </mat-form-field>
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let element">{{element.user.firstName + ' ' + element.user.lastName}}</td>
+      </ng-container>
+      <ng-container matColumnDef="pin">
+        <th mat-header-cell *matHeaderCellDef>PIN
+          <div>
+            <mat-form-field>
+              <input matInput class="form-field" [formControl]="pinFilter" [placeholder]="filterPinMessage">
+            </mat-form-field>
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let element">{{element.user.pin}}</td>
+      </ng-container>
+      <ng-container matColumnDef="nonAttendances">
+        <th mat-header-cell *matHeaderCellDef>Non Attendances</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="row-container">
+            <div [ngClass]="{ 'motivated': nonAttendance.motivated, 'non-attendance': hasMotivateNonAttendanceAccess() }" 
+              *ngFor="let nonAttendance of element.nonAttendances" 
+              (click)="hasMotivateNonAttendanceAccess() ? updateNonAttendanceMotivatedStatus(nonAttendance.id, nonAttendance.motivated) : false">
+              {{convertTimestampToLocaleDate(nonAttendance.date)}}
+            </div>
+          </div>
+        </td>
+      </ng-container>
+      <ng-container *ngIf="isTeachingSubject()" matColumnDef="add">
+        <th mat-header-cell *matHeaderCellDef>Add</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button class="default-btn" (click)="openNonAttendanceModal(element.user)" title="Add">
+            <mat-icon aria-hidden="false" aria-label="Add">note_add</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedNonAttendanceColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedNonAttendanceColumns;"></tr>
+    </table>
+
+    <div *ngIf="mode === 'grades'" class="result">
+      Total average score: {{totalAverageScore}}
+    </div>
+
+    <div *ngIf="mode === 'nonAttendances'" class="result">
+      <div>Total non-attendances: {{totalNonAttendances}}</div>
+      <div>Total unmotivated non-attendanes: {{totalUnmotivatedNonAttendances}}</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="pre-modal" *ngIf="showModal">
+  <div *ngIf="showModal" class="modal">
+    <h1 class="title">{{modalMode}} grade</h1>
+    <form *ngIf="mode === 'grades'" id="grade-form" [formGroup]="gradeForm">
+
+        <div class="input-field">
+          <label class="label-field" for="grade">Grade</label>
+          <input class="input" formControlName="grade" id="grade" type="number" placeholder="Grade">
+          <div *ngIf="gradeForm.get('grade')!.invalid && gradeForm.get('grade')!.errors &&
+            (gradeForm.get('grade')!.dirty || gradeForm.get('grade')!.touched)">
+            <small class="text-danger" *ngIf="gradeForm.get('grade')!.hasError('required')">
+              {{requiredMessage}}
+            </small>
+            <small class="text-danger" *ngIf="gradeForm.get('grade')!.hasError('min') || gradeForm.get('grade')!.hasError('max')">
+              {{invalidGradeMessage}}
+            </small>
+          </div>
+          
+        </div>
+
+    </form>
+
+    <div class="buttons">
+      <button style="width: 28%;" class="cancel-btn" type="button" (click)="cancelModal()">
+        Cancel
+      </button>
+      
+      <button *ngIf="modalMode==='Edit'" style="width: 28%;" class="remove-btn" type="button" (click)="cancelModal(); openDeleteModal()">
+        Delete
+      </button>
+      
+      <button style="width: 28%;" class="submit-btn" type="button" (click)="submit()" [disabled]="!gradeForm.valid">
+        Submit
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="pre-modal" *ngIf="showDeleteModal">
+  <div *ngIf="showDeleteModal" class="modal">
+    <h1 class="title">Delete confirmation</h1>
+    <p class="subtitle">Are you sure you want to delete this item?</p>
+    <div class="buttons">
+      <button class="cancel-btn" type="button" (click)="cancelDeleteModal()">
+        No
+      </button>
+      <button class="submit-btn" type="button" (click)="deleteGrade()">
+        Yes
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="pre-modal" *ngIf="showNonAttendanceModal">
+  <div *ngIf="showNonAttendanceModal" class="modal">
+    <h1 class="title">Nonattendance confirmation</h1>
+    <p class="subtitle">Are you sure you want to add the nonattendance?<br></p>
+    <div class="buttons">
+      <button class="cancel-btn" type="button" (click)="cancelNonAttendanceModal()">
+        No
+      </button>
+      <button class="submit-btn" type="button" (click)="addNonAttendance()">
+        Yes
+      </button>
+    </div>
+  </div>
+</div>

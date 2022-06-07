@@ -1,0 +1,138 @@
+<div class="container">
+  <div class="container-table">
+    <h1 class="title">Subjects</h1>
+    <p class="subtitle">Manage your school's subjects</p>
+
+    <table mat-table [dataSource]="subjects!" class="table mat-elevation-z8">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name
+          <div>
+            <mat-form-field>
+              <input matInput class="form-field" [formControl]="nameFilter" [placeholder]="filterNameMessage">
+            </mat-form-field>
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let element">{{element.name}}</td>
+      </ng-container>
+      <ng-container *ngIf="hasRoleDirector()" matColumnDef="teacher">
+        <th mat-header-cell *matHeaderCellDef>Teacher
+          <div>
+            <mat-form-field>
+              <input matInput class="form-field" [formControl]="teacherFilter" [placeholder]="filterTeacherMessage">
+            </mat-form-field>
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let element">{{element.teacher.firstName + ' ' + element.teacher.lastName}}</td>
+      </ng-container>
+      <ng-container matColumnDef="studyGroup">
+        <th mat-header-cell *matHeaderCellDef>Study Group
+          <div>
+            <mat-form-field>
+              <input matInput class="form-field" [formControl]="studyGroupFilter" [placeholder]="filterStudyGroupMessage">
+            </mat-form-field>
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let element">{{element.studyGroup.number + element.studyGroup.name}}</td>
+      </ng-container>
+      <ng-container *ngIf="hasRoleDirector()" matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button class="default-btn" (click)="mode='Edit'; openEditSubject(element); $event.stopPropagation()" title="Edit">
+            <mat-icon aria-hidden="false" aria-label="Edit">edit</mat-icon>
+          </button>
+          <button mat-icon-button class="delete-btn" (click)="openDeleteModal(element); $event.stopPropagation()" title="Remove">
+            <mat-icon aria-hidden="false" aria-label="Delete">delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr class="path-to-situation" mat-row *matRowDef="let i = index; let row; columns: displayedColumns;"
+        (click)="toSituation(i)"></tr>
+    </table>
+    <button *ngIf="hasRoleDirector()" class="button" type="button" (click)="mode='Add'; openAddSubject()">Add subject</button>
+  </div>
+</div>
+
+<div class="pre-modal" *ngIf="showModal">
+  <div *ngIf="showModal" class="modal">
+    <h1 class="title">{{getModalTitle()}}</h1>
+    <form id="register-form" [formGroup]="form">
+
+        <div class="input-field">
+          <label class="label-field" for="name">Name</label>
+          <input class="input" formControlName="name" id="name" type="text" placeholder="Name">
+          <div *ngIf="form.get('name')!.invalid && form.get('name')!.errors &&
+            (form.get('name')!.dirty || form.get('name')!.touched)">
+            <small class="text-danger" *ngIf="form.get('name')!.hasError('required')">
+              {{requiredMessage}}
+            </small>
+          </div>
+        </div>
+
+        <div class="input-field">
+          <label class="label-field" for="teacher">Teacher</label>
+          <select *ngIf="mode=='Add'" class="input-select" formControlName="teacher" name="teacher" id="teacher">
+            <option *ngFor="let teacher of teachers" [value]="teacher.id" class="input-option">
+              {{teacher.firstName + ' ' + teacher.lastName}}
+            </option>
+          </select>
+          <select *ngIf="mode=='Edit'" class="input-select" formControlName="teacher" name="teacher" id="teacher">
+            <option value="{{teacher.id}}" *ngFor="let teacher of teachers" class="input-option">
+              {{teacher.firstName + ' ' + teacher.lastName}}
+            </option>
+          </select>
+          <div *ngIf="form.get('teacher')!.invalid && form.get('teacher')!.errors &&
+            (form.get('teacher')!.dirty || form.get('teacher')!.touched)">
+            <small class="text-danger" *ngIf="form.get('teacher')!.hasError('required')">
+              {{requiredMessage}}
+            </small>
+          </div>
+        </div>
+
+        <div class="input-field">
+          <label class="label-field" for="studyGroup">Study Group</label>
+          <select *ngIf="mode=='Add'" class="input-select" formControlName="studyGroup" name="studyGroup" id="studyGroup">
+            <option *ngFor="let studyGroup of studyGroups" [value]="studyGroup.id" class="input-option">
+              {{studyGroup.number + studyGroup.name}}
+            </option>
+          </select>
+          <select *ngIf="mode=='Edit'" class="input-select" formControlName="studyGroup" name="studyGroup" id="studyGroup">
+            <option value="{{studyGroup.id}}" *ngFor="let studyGroup of studyGroups" class="input-option">
+              {{studyGroup.number + studyGroup.name}}
+            </option>
+          </select>
+          <div *ngIf="form.get('studyGroup')!.invalid && form.get('studyGroup')!.errors &&
+            (form.get('studyGroup')!.dirty || form.get('studyGroup')!.touched)">
+            <small class="text-danger" *ngIf="form.get('studyGroup')!.hasError('required')">
+              {{requiredMessage}}
+            </small>
+          </div>
+        </div>
+
+    </form>
+    <div class="buttons">
+      <button class="cancel-btn" type="button" (click)="cancelModal()">
+        Cancel
+      </button>
+      <button class="submit-btn" type="button" (click)="submit()" [disabled]="!form.valid">
+        {{mode}}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="pre-modal" *ngIf="showDeleteModal">
+  <div *ngIf="showDeleteModal" class="modal">
+    <h1 class="title">Delete confirmation</h1>
+    <p class="subtitle">Are you sure you want to delete this item?</p>
+    <p class="subtitle">This action will also take effect in the grades and non-attendances referenced by this item.</p>
+    <div class="buttons">
+      <button class="cancel-btn" type="button" (click)="cancelDeleteModal()">
+        No
+      </button>
+      <button class="submit-btn" type="button" (click)="removeSubject()">
+        Yes
+      </button>
+    </div>
+  </div>
+</div>

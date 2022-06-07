@@ -1,0 +1,10 @@
+.container-table {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+}
+
+.path-to-situation:hover {
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.3);
+}

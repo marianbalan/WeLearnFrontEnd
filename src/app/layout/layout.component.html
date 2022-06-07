@@ -1,0 +1,11 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<div class="layout-container">
+  <app-navbar></app-navbar>
+  <app-sidebar-container *ngIf="isLoggedIn" (closeSidebarButton)="isSidebarToggled=!isSidebarToggled">
+  </app-sidebar-container>
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+  <mat-progress-spinner [mode]="'indeterminate'" *ngIf="loading$ | async"></mat-progress-spinner>
+</div>

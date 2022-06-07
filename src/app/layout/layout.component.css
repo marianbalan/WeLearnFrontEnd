@@ -1,0 +1,31 @@
+.layout-container {
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+.content {
+  overflow-x: hidden;
+  height: 100%;
+  margin-left: 0;
+  transition: 0.3s ease-in-out;
+}
+
+.sidebar-active {
+  margin-left: 4rem;
+}
+
+mat-progress-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  
+}
+
+:host ::ng-deep .mat-progress-spinner circle, .mat-spinner circle {   
+  stroke: #14281f;
+}

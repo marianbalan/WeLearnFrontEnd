@@ -1,0 +1,12 @@
+<div class="sidebar" [ngClass]="{'open-sidebar': isSidebarActive}">
+  <div class="header" (click)="close()">
+    <i class="sidebar-button" [ngClass]="{'ic-close': isSidebarActive, 'ic-menu': !isSidebarActive}">
+      (click)="close()"
+    </i>
+  </div>
+  <div class="content" (click)="changePage()">
+    <app-sidebar-element *ngFor="let item of sidebarElements" [title]="item.title" [icon]="item.icon"
+      [route]="item.route" [isSidebarActive]="isSidebarActive">
+    </app-sidebar-element>
+  </div>
+</div>

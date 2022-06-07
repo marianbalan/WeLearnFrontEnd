@@ -1,0 +1,124 @@
+<div class="container">
+  <div class="container-table">
+    <h1 class="title">Study Groups</h1>
+    <p class="subtitle">Manage your schools's study-groups</p>
+    <table mat-table [dataSource]="studyGroups" class="table mat-elevation-z8">
+      <ng-container matColumnDef="number">
+        <th mat-header-cell *matHeaderCellDef>Number</th>
+        <td mat-cell *matCellDef="let element">{{element.number}}</td>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let element">{{element.name}}</td>
+      </ng-container>
+      <ng-container matColumnDef="specialization">
+        <th mat-header-cell *matHeaderCellDef>Specialization</th>
+        <td mat-cell *matCellDef="let element">{{element.specialization}}</td>
+      </ng-container>
+      <ng-container matColumnDef="classMaster">
+        <th mat-header-cell *matHeaderCellDef>ClassMaster</th>
+        <td mat-cell *matCellDef="let element">{{element.classMaster.firstName + ' ' + element.classMaster.lastName}}</td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button class="default-btn" (click)="mode='Edit'; openEditStudyGroup(element)" title="Edit">
+            <mat-icon aria-hidden="false" aria-label="Edit">edit</mat-icon>
+          </button>
+          <button mat-icon-button class="delete-btn" (click)="openDeleteModal(element)" title="Remove">
+            <mat-icon aria-hidden="false" aria-label="Delete">delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <button class="button" type="button" (click)="mode='Add'; openAddStudyGroup()">Add study group</button>
+  </div>
+</div>
+
+<div class="pre-modal" *ngIf="showModal">
+  <div *ngIf="showModal" class="modal">
+    <h1 class="title">{{getModalTitle()}}</h1>
+    <form id="register-form" [formGroup]="form">
+      <div class="input-fields-grid">
+        <div class="input-field">
+          <label class="label-field" for="number">Number</label>
+          <input class="input" min="0" max="13" formControlName="number" id="number" type="number" placeholder="Number">
+          <div *ngIf="form.get('number')!.invalid && form.get('number')!.errors &&
+            (form.get('number')!.dirty || form.get('number')!.touched)">
+            <small class="text-danger" *ngIf="form.get('number')!.hasError('required')">
+              {{requiredMessage}}
+            </small>
+          </div>
+        </div>
+
+        <div class="input-field">
+          <label class="label-field" for="name">Name</label>
+          <input class="input" formControlName="name" id="name" type="text" placeholder="Name">
+          <div *ngIf="form.get('name')!.invalid && form.get('name')!.errors &&
+            (form.get('name')!.dirty || form.get('name')!.touched)">
+            <small class="text-danger" *ngIf="form.get('name')!.hasError('required')">
+              {{requiredMessage}}
+            </small>
+          </div>
+        </div>
+
+        <div class="input-field">
+          <label class="label-field" for="specialization">Specialization</label>
+          <input class="input" formControlName="specialization" id="specialization" type="text" placeholder="Specialization">
+          <div *ngIf="form.get('specialization')!.invalid && form.get('specialization')!.errors &&
+            (form.get('specialization')!.dirty || form.get('specialization')!.touched)">
+            <small class="text-danger" *ngIf="form.get('specialization')!.hasError('required')">
+              {{requiredMessage}}
+            </small>
+          </div>
+        </div>
+
+        <div class="input-field">
+          <label class="label-field" for="classMaster">Class Master</label>
+          <select *ngIf="mode=='Add'" class="input-select" formControlName="classMaster" name="classMaster" id="classMaster">
+            <option *ngFor="let teacher of teachers" [value]="teacher.id" class="input-option">
+              {{teacher.firstName + ' ' + teacher.lastName}}
+            </option>
+          </select>
+          <select *ngIf="mode=='Edit'" class="input-select" formControlName="classMaster" name="classMaster" id="classMaster">
+            <option value="{{teacher.id}}" *ngFor="let teacher of teachers" class="input-option">
+              {{teacher.firstName + ' ' + teacher.lastName}}
+            </option>
+          </select>
+          <div *ngIf="form.get('classMaster')!.invalid && form.get('classMaster')!.errors &&
+            (form.get('classMaster')!.dirty || form.get('classMaster')!.touched)">
+            <small class="text-danger" *ngIf="form.get('classMaster')!.hasError('required')">
+              {{requiredMessage}}
+            </small>
+          </div>
+        </div>
+
+      </div>
+    </form>
+    <div class="buttons">
+      <button class="cancel-btn" type="button" (click)="cancelModal()">
+        Cancel
+      </button>
+      <button class="submit-btn" type="button" (click)="submit()" [disabled]="!form.valid">
+        {{mode}}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="pre-modal" *ngIf="showDeleteModal">
+  <div *ngIf="showDeleteModal" class="modal">
+    <h1 class="title">Delete confirmation</h1>
+    <p class="subtitle">Are you sure you want to delete this item?<br></p>
+    <div class="buttons">
+      <button class="cancel-btn" type="button" (click)="cancelDeleteModal()">
+        No
+      </button>
+      <button class="submit-btn" type="button" (click)="removeStudyGroup()">
+        Yes
+      </button>
+    </div>
+  </div>
+</div>

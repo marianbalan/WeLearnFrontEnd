@@ -1,0 +1,87 @@
+<div class="container">
+  <div class="container-table">
+    <h1 class="title">Student Situation</h1>
+    <p class="student-name" *ngIf="student !== undefined">{{student!.firstName + ' ' + student!.lastName}}</p>
+
+    <div class="situation-navbar">
+      <div [ngClass]="{ 'current-tab': mode === 'grades' }" (click)="mode = 'grades'" class="situation-navbar-element">Grades</div>
+      <div [ngClass]="mode === 'nonAttendances' ? 'current-tab' : ''"(click)="mode = 'nonAttendances'" class="situation-navbar-element">Non Attendances</div>
+    </div>
+
+    <table id="situationtable" #situationtable *ngIf="mode == 'grades'" mat-table [dataSource]="situation!" class="table mat-elevation-z8">
+      <ng-container matColumnDef="subject">
+        <th mat-header-cell *matHeaderCellDef>Subject
+          <div>
+            <mat-form-field>
+              <input matInput class="form-field" [formControl]="subjectFilter" [placeholder]="filterSubjectMessage">
+            </mat-form-field>
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let element">{{element.subject.name}}</td>
+      </ng-container>
+      <ng-container matColumnDef="grades">
+        <th mat-header-cell *matHeaderCellDef>Grades</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="row-container">
+            <div *ngFor="let grade of element.grades">
+              {{grade.grade}}
+            </div>
+        </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="averageScore">
+        <th mat-header-cell *matHeaderCellDef>Average Score</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="average-container">
+            <div [ngClass]="{ 'not-passing': element.averageScore < 5 }" class="averageScore" *ngIf="element.averageScore !== null">
+              {{element.averageScore}}
+            </div>
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedGradeColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedGradeColumns;"></tr>
+    </table>
+
+    <table *ngIf="mode === 'nonAttendances'" mat-table [dataSource]="situation!" class="table mat-elevation-z8">
+      <ng-container matColumnDef="subject">
+        <th mat-header-cell *matHeaderCellDef>Subject
+          <div>
+            <mat-form-field>
+              <input matInput class="form-field" [formControl]="subjectFilter" [placeholder]="filterSubjectMessage">
+            </mat-form-field>
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let element">{{element.subject.name}}</td>
+      </ng-container>
+      <ng-container matColumnDef="nonAttendances">
+        <th mat-header-cell *matHeaderCellDef>Non Attendances</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="row-container">
+            <div [ngClass]="{ 'motivated': nonAttendance.motivated, 'non-attendance': hasMotivateNonAttendanceAccess() }" 
+              *ngFor="let nonAttendance of element.nonAttendances" 
+              (click)="hasMotivateNonAttendanceAccess() ? updateNonAttendanceMotivatedStatus(nonAttendance.id, nonAttendance.motivated) : false">
+              {{convertTimestampToLocaleDate(nonAttendance.date)}}
+            </div>
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedNonAttendanceColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedNonAttendanceColumns;"></tr>
+    </table>
+
+    <div *ngIf="mode === 'grades'" class="result">
+      Total average score: {{totalAverageScore}}
+    </div>
+
+    <div *ngIf="mode === 'nonAttendances'" class="result">
+      <div>Total non-attendances: {{totalNonAttendances}}</div>
+      <div>Total unmotivated non-attendanes: {{totalUnmotivatedNonAttendances}}</div>
+    </div>
+
+    <div class="button-container">
+      <button class="button" (click)="downloadSituationPdfFile()">Download Situation</button>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,199 @@
+<div class="container-main">
+
+  <div class="tabs">
+    <div class="tab-headers">
+      <div class="tab-header">
+        <div class="tab-button" tabindex="0" (click)="optionMenu='PersonalInfo'"
+              [class.selected-tab]="optionMenu == 'PersonalInfo'">
+          <span class="tab-label">Personal Information</span>
+        </div>
+      </div>
+      <div class="tab-header">
+        <div class="tab-button" tabindex="1" (click)="optionMenu='SchoolInfo'"
+              [class.selected-tab]="optionMenu == 'SchoolInfo'">
+          <span class="tab-label">School Information</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-reg">
+    <div class="left-container">
+      <h1 class="title">Registration</h1>
+      <div class="image-container">
+        <img *ngIf="optionMenu == 'PersonalInfo'" class="icon" src="../../assets/user-reg.png">
+        <img *ngIf="optionMenu == 'SchoolInfo'" class="icon" src="../../assets/school-reg.png">
+      </div>
+    </div>
+    <div class="right-container">
+      <form id="register-form" [formGroup]="registerForm">
+        <div *ngIf="optionMenu == 'PersonalInfo'">
+          <div class="input-fields-grid">
+
+            <div class="input-field">
+              <label class="label-field" for="email">Email</label>
+              <input class="input" formControlName="email" id="email" type="text" placeholder="Email">
+              <div *ngIf="registerForm.get('email')!.invalid && registerForm.get('email')!.errors &&
+                (registerForm.get('email')!.dirty || registerForm.get('email')!.touched)">
+                <small class="text-danger" *ngIf="registerForm.get('email')!.hasError('required')">
+                  {{requiredMessage}}
+                </small>
+                <small class="text-danger" *ngIf="registerForm.get('email')!.hasError('pattern')">
+                  {{emailMessage}}
+                </small>
+              </div>
+            </div>
+
+            <div class="input-field">
+              <label class="label-field" for="password">Password</label>
+              <input class="input" formControlName="password" id="password" type="password" placeholder="Password">
+              <div *ngIf="registerForm.get('password')!.invalid && registerForm.get('password')!.errors &&
+                (registerForm.get('password')!.dirty || registerForm.get('password')!.touched)">
+                <small class="text-danger" *ngIf="registerForm.get('password')!.hasError('required')">
+                  {{requiredMessage}}
+                </small>
+              </div>
+            </div>
+
+            <div class="input-field">
+              <label class="label-field" for="confirmPassword">Confirm Password</label>
+              <input class="input" formControlName="confirmPassword" id="confirmPassword" type="password" placeholder="Confirm Password">
+              <div *ngIf="registerForm.get('confirmPassword')!.invalid && registerForm.get('confirmPassword')!.errors &&
+                (registerForm.get('confirmPassword')!.dirty || registerForm.get('confirmPassword')!.touched)">
+                <small class="text-danger" *ngIf="registerForm.get('confirmPassword')!.hasError('required')">
+                  {{requiredMessage}}
+                </small>
+              </div>
+            </div>
+
+            <div class="input-field">
+              <label class="label-field" for="firstName">First Name</label>
+              <input class="input" formControlName="firstName" id="firstName" type="text" placeholder="First Name">
+              <div *ngIf="registerForm.get('firstName')!.invalid && registerForm.get('firstName')!.errors &&
+                (registerForm.get('firstName')!.dirty || registerForm.get('firstName')!.touched)">
+                <small class="text-danger" *ngIf="registerForm.get('firstName')!.hasError('required')">
+                  {{requiredMessage}}
+                </small>
+              </div>
+            </div>
+
+            <div class="input-field">
+              <label class="label-field" for="lastName">Last Name</label>
+              <input class="input" formControlName="lastName" id="lastName" type="text" placeholder="Last Name">
+              <div *ngIf="registerForm.get('lastName')!.invalid && registerForm.get('lastName')!.errors &&
+                (registerForm.get('lastName')!.dirty || registerForm.get('lastName')!.touched)">
+                <small class="text-danger" *ngIf="registerForm.get('lastName')!.hasError('required')">
+                  {{requiredMessage}}
+                </small>
+              </div>
+            </div>
+
+            <div class="input-field">
+              <label class="label-field" for="pin">PIN</label>
+              <input class="input" formControlName="pin" id="pin" type="text" placeholder="Personal Identification Number">
+              <div *ngIf="registerForm.get('pin')!.invalid && registerForm.get('pin')!.errors &&
+                (registerForm.get('pin')!.dirty || registerForm.get('pin')!.touched)">
+                <small class="text-danger" *ngIf="registerForm.get('pin')!.hasError('required')">
+                  {{requiredMessage}}
+                </small>
+              </div>
+            </div>
+
+            <div class="input-field">
+              <label class="label-field" for="phoneNumber">Phone Number</label>
+              <input class="input" formControlName="phoneNumber" id="phoneNumber" type="text" placeholder="Phone Number">
+              <div *ngIf="registerForm.get('phoneNumber')!.invalid && registerForm.get('phoneNumber')!.errors &&
+                (registerForm.get('phoneNumber')!.dirty || registerForm.get('phoneNumber')!.touched)">
+                <small class="text-danger" *ngIf="registerForm.get('phoneNumber')!.hasError('required')">
+                  {{requiredMessage}}
+                </small>
+              </div>
+            </div>
+
+          </div>
+        </div>
+    
+        <div *ngIf="optionMenu == 'SchoolInfo'">
+          <div class="input-fields-grid">
+
+            <div class="input-field">
+              <label class="label-field" for="name">Name</label>
+              <input class="input" formControlName="name" id="name" type="text" placeholder="Name">
+              <div *ngIf="registerForm.get('name')!.invalid && registerForm.get('name')!.errors &&
+                (registerForm.get('name')!.dirty || registerForm.get('name')!.touched)">
+                <small class="text-danger" *ngIf="registerForm.get('name')!.hasError('required')">
+                  {{requiredMessage}}
+                </small>
+              </div>
+            </div>
+
+            <div class="input-field">
+              <label class="label-field" for="cui">Identification Code</label>
+              <input class="input" formControlName="cui" id="cui" type="text" placeholder="Identification Code">
+              <div *ngIf="registerForm.get('cui')!.invalid && registerForm.get('cui')!.errors &&
+                (registerForm.get('cui')!.dirty || registerForm.get('cui')!.touched)">
+                <small class="text-danger" *ngIf="registerForm.get('cui')!.hasError('required')">
+                  {{requiredMessage}}
+                </small>
+              </div>
+            </div>
+            
+            <div class="input-field">
+              <label class="label-field" for="county">County</label>
+              <input class="input" formControlName="county" id="county" type="text" placeholder="County">
+              <div *ngIf="registerForm.get('county')!.invalid && registerForm.get('county')!.errors &&
+                (registerForm.get('county')!.dirty || registerForm.get('county')!.touched)">
+                <small class="text-danger" *ngIf="registerForm.get('county')!.hasError('required')">
+                  {{requiredMessage}}
+                </small>
+              </div>
+            </div>
+
+            <div class="input-field">
+              <label class="label-field" for="city">City</label>
+              <input class="input" formControlName="city" id="city" type="text" placeholder="City">
+              <div *ngIf="registerForm.get('city')!.invalid && registerForm.get('city')!.errors &&
+                (registerForm.get('city')!.dirty || registerForm.get('city')!.touched)">
+                <small class="text-danger" *ngIf="registerForm.get('city')!.hasError('required')">
+                  {{requiredMessage}}
+                </small>
+              </div>
+            </div>
+
+            <div class="input-field">
+              <label class="label-field" for="street">Street</label>
+              <input class="input" formControlName="street" id="street" type="text" placeholder="Street">
+              <div *ngIf="registerForm.get('street')!.invalid && registerForm.get('street')!.errors &&
+                (registerForm.get('street')!.dirty || registerForm.get('street')!.touched)">
+                <small class="text-danger" *ngIf="registerForm.get('street')!.hasError('required')">
+                  {{requiredMessage}}
+                </small>
+              </div>
+            </div>
+
+            <div class="input-field">
+              <label class="label-field" for="number">Number</label>
+              <input class="input" formControlName="number" id="number" type="text" placeholder="Number">
+              <div *ngIf="registerForm.get('number')!.invalid && registerForm.get('number')!.errors &&
+                (registerForm.get('number')!.dirty || registerForm.get('number')!.touched)">
+                <small class="text-danger" *ngIf="registerForm.get('number')!.hasError('required')">
+                  {{requiredMessage}}
+                </small>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="invalidPasswords" class="text-danger text-error">The passwords are not the same!</div>
+
+  <div class="button-container">
+    <button class="button" type="button" (click)="register()" [disabled]="!registerForm.valid">
+      Register
+    </button>
+  </div>
+
+</div>

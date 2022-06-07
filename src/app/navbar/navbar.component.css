@@ -1,0 +1,54 @@
+.header {
+    background-color: #1f4034;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 3.5rem;
+}
+
+.logo {
+    display: flex;
+    margin-left: 1rem;
+}
+
+.link {
+    text-decoration: none;
+}
+
+.title {
+    font-size: 2.5rem;
+    color: #e7e5e9;
+}
+
+.icon-left {
+    height: 30px;
+    margin-right: 2rem;
+    filter: invert(95%);
+}
+
+.icon {
+    height: 2rem;
+    filter: invert(95%);
+    margin-right: 0.5rem;
+}
+
+.menu {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.menu-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 2rem;
+}
+
+.logo:hover, .menu-item:hover {
+    filter: brightness(150%);
+}
+
+.menu-text {
+    font-size: 1.4rem;
+    color: #e7e5e9;
+}

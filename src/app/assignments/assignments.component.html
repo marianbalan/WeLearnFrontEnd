@@ -1,0 +1,364 @@
+<div class="container">
+  <h1 class="title">Assignments</h1>
+
+  <!-- <div class="assignments-container">
+
+    <div class="assignment" *ngFor="let assignment of assignments">
+      <div class="clickable" (click)="onAssignmentClick(assignment)">
+        <div class="main-information-container">
+          <div class="information-container">
+            <div class="assignment-title">{{ assignment.title }}</div>
+            <div class="info">{{ assignment.subject.name }}</div>
+          </div>
+
+          <div class="dates-container">
+            <div class="info">Date: {{ convertTimestampToLocaleDate(assignment.date) }}</div>
+            <div [ngClass]="{ 'text-danger': isPastDue(assignment.dueTo) }" class="info">Due To: {{ convertTimestampToLocaleDate(assignment.dueTo) }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stretch-container" *ngIf="selectedAssignment !== undefined && selectedAssignment.id == assignment.id">
+        <div class="description" *ngIf="assignment.description">
+          {{ assignment.description }}
+        </div>
+        <button class="submit-btn" *ngIf="assignment.requirementFilePath"
+          (click)="downloadAssignmentFile(assignment.requirementFilePath!)">Download Attachment</button>
+
+        <div *ngIf="hasRoleStudent()">
+          <input type="file" class="file-input" name="attachment" id="attachment"
+          (change)="onFileSelected($event, assignment)" #fileUpload>
+          <div class="student-attachment">
+            <div *ngIf="!assignment.closed">{{getAttachedFileName(assignment) || "Upload a response file."}}</div>
+            <div *ngIf="assignment.closed && getAttachedFileName(assignment) !== undefined">{{getAttachedFileName(assignment)}}</div>
+              <button *ngIf="assignment.responses.length === 0 && !assignment.closed" mat-mini-fab style="background-color: #14281f;" class="upload-btn"
+                (click)="fileUpload.click()">
+                  <mat-icon>attach_file</mat-icon>
+              </button>
+              <button *ngIf="assignment.responses.length !== 0" mat-icon-button class="default-btn"
+                (click)="downloadAssignmentResponse(assignment.responses[0].filePath!)">
+                  <mat-icon>file_download</mat-icon>
+              </button>
+              <button *ngIf="assignment.responses.length !== 0" mat-icon-button class="delete-btn"
+                (click)="openDeleteResponseModal(assignment.responses[0])">
+                  <mat-icon>delete</mat-icon>
+              </button>
+          </div>
+        </div>
+
+        <div *ngIf="hasRoleTeacher()">
+          <div class="student-attachment" *ngFor="let response of assignment.responses">
+            <div>{{response.filePath}}</div>
+              <button mat-icon-button class="default-btn"
+                (click)="downloadAssignmentResponse(response.filePath!)">
+                <mat-icon>file_download</mat-icon>
+              </button>
+          </div>
+        </div>
+
+        <button class="submit-btn similarity-btn" *ngIf="assignment.responses.length !== 0"
+          (click)="showSimilarityPopup(assignment)">Compute similarity Report</button>
+      </div>
+
+      <div class="student-close-container" *ngIf="hasRoleStudent()">
+        <div class="close-container">
+          <div class="info" [ngClass]="{ 'text-danger': assignment.closed }">{{ assignment.closed ? 'Closed' : 'Open' }}</div>
+          <mat-icon class="open" *ngIf="!assignment.closed" aria-hidden="false">lock_open</mat-icon>
+          <mat-icon class="closed" *ngIf="assignment.closed" aria-hidden="false">lock</mat-icon>
+        </div>
+      </div>
+
+      <div class="button-container" *ngIf="hasRoleTeacher()">
+        <div class="left-button-container">
+          <button mat-icon-button class="delete-btn" (click)="openDeleteModal(assignment)" title="Remove">
+            <mat-icon aria-hidden="false" aria-label="Delete">delete</mat-icon>
+          </button>
+          <button mat-icon-button class="default-btn" (click)="openEditAssignment(assignment)" title="Edit">
+            <mat-icon aria-hidden="false" aria-label="Edit">edit</mat-icon>
+          </button>
+        </div>
+        <div class="close-container">
+          <div class="info" [ngClass]="{ 'text-danger': assignment.closed }">{{ assignment.closed ? 'Closed' : 'Open' }}</div>
+          <button *ngIf="!assignment.closed" mat-icon-button class="default-btn" (click)="updateAssignmentClosed(assignment)" title="Close">
+            <mat-icon aria-hidden="false" aria-label="Close">lock_open</mat-icon>
+          </button>
+          <button *ngIf="assignment.closed" mat-icon-button class="delete-btn" (click)="updateAssignmentClosed(assignment)" title="Open">
+            <mat-icon aria-hidden="false" aria-label="Open">lock</mat-icon>
+          </button>
+        </div>
+      </div>
+      
+    </div>
+
+  </div>
+
+  <button *ngIf="hasRoleTeacher()" class="button" type="button" (click)="openAddAssignment()">Add assignment</button>
+</div> -->
+
+<div class="assignments-container">
+    <div class="assignment" *ngFor="let assignment of assignments">
+      <div class="main-info" (click)="onAssignmentClick(assignment)">
+        <div class="main-title">
+          {{assignment.title}}
+        </div>
+        <div class="subject-status-container">
+          <div class="main-title">
+            {{assignment.subject.name}}
+          </div>
+          <div class="close-container">
+            <button *ngIf="!assignment.closed && hasRoleTeacher()" mat-icon-button class="main-btn" (click)="$event.stopPropagation(); updateAssignmentClosed(assignment); " title="Close">
+              <mat-icon aria-hidden="false" aria-label="Close">lock_open</mat-icon>
+            </button>
+            <button *ngIf="assignment.closed && hasRoleTeacher()" mat-icon-button class="main-btn" (click)="$event.stopPropagation(); updateAssignmentClosed(assignment); $event.preventDefault()" title="Open">
+              <mat-icon aria-hidden="false" aria-label="Open">lock</mat-icon>
+            </button>
+            <mat-icon *ngIf="!assignment.closed && hasRoleStudent()" class="close-btn" aria-hidden="false" aria-label="Close">lock_open</mat-icon>
+            <mat-icon *ngIf="assignment.closed && hasRoleStudent()" class="close-btn" aria-hidden="false" aria-label="Close">lock</mat-icon>
+          </div>
+        </div>
+      </div>
+      <div class="not-shown" *ngIf="selectedAssignment !== undefined && selectedAssignment.id == assignment.id">
+        <div class="description">
+          <div>{{assignment.description}}</div>
+          <div>Due to: {{ convertTimestampToLocaleDate(assignment.dueTo) }}</div>
+        </div>
+        <div *ngIf="assignment.requirementFilePath || assignment.responses.length > 0" class="assignment-buttons">
+          <button class="assignment-btn" *ngIf="assignment.requirementFilePath"
+            (click)="downloadAssignmentFile(assignment.requirementFilePath!)">Download</button>
+          <button class="assignment-btn" *ngIf="assignment.responses.length > 0"
+            (click)="showSimilarityPopup(assignment)">Similarity</button>
+        </div>
+        <div class="submissions">
+          <table *ngIf="hasRoleTeacher() && assignment.responses.length > 0">
+            <tr *ngFor="let response of assignment.responses">
+              <td>{{response.student.firstName + ' ' + response.student.lastName}}</td>
+              <td>{{response.student.pin}}</td>
+              <td>
+                <button mat-icon-button class="default-btn"
+                  (click)="downloadAssignmentResponse(response.filePath!)">
+                  <mat-icon>file_download</mat-icon>
+                </button>
+              </td>
+            </tr>
+          </table>
+          <div *ngIf="hasRoleStudent()">
+            <input type="file" accept=".pdf,.txt" class="file-input" name="attachment" id="attachment"
+              (change)="onFileSelected($event, assignment)" #fileUpload>
+            <div class="student-attachment">
+              <div *ngIf="!assignment.closed">{{getAttachedFileName(assignment) || "Upload a response file."}}</div>
+              <div *ngIf="assignment.closed && getAttachedFileName(assignment) !== undefined">{{getAttachedFileName(assignment)}}</div>
+                <button *ngIf="assignment.responses.length === 0 && !assignment.closed" mat-mini-fab style="background-color: #14281f;" class="upload-btn"
+                  (click)="fileUpload.click()">
+                    <mat-icon>attach_file</mat-icon>
+                </button>
+                <button *ngIf="assignment.responses.length !== 0" mat-icon-button class="default-btn"
+                  (click)="downloadAssignmentResponse(assignment.responses[0].filePath!)">
+                    <mat-icon>file_download</mat-icon>
+                </button>
+                <button *ngIf="assignment.responses.length !== 0" mat-icon-button class="delete-btn"
+                  (click)="openDeleteResponseModal(assignment.responses[0])">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="hasRoleTeacher()" class="actions">
+          <button mat-icon-button class="delete-btn" (click)="openDeleteModal(assignment)" title="Remove">
+            <mat-icon aria-hidden="false" aria-label="Delete">delete</mat-icon>
+          </button>
+          <button mat-icon-button class="default-btn" (click)="openEditAssignment(assignment)" title="Edit">
+            <mat-icon aria-hidden="false" aria-label="Edit">edit</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button *ngIf="hasRoleTeacher()" class="button" type="button" (click)="openAddAssignment()">Add assignment</button>
+</div>
+
+<div class="pre-modal" *ngIf="showModal">
+  <div *ngIf="showModal" class="modal">
+    <h1 class="title">{{getModalTitle()}}</h1>
+    <form [formGroup]="form">
+
+      <div class="input-field">
+        <label class="label-field" for="title">Title</label>
+        <input class="input" formControlName="title" id="title" type="text" placeholder="Title">
+        <div *ngIf="form.get('title')!.invalid && form.get('title')!.errors &&
+          (form.get('title')!.dirty || form.get('title')!.touched)">
+          <small class="text-danger" *ngIf="form.get('title')!.hasError('required')">
+            {{requiredMessage}}
+          </small>
+        </div>
+      </div>
+
+      <div class="input-field">
+        <label class="label-field" for="description">Description</label>
+        <textarea class="input" formControlName="description" id="description" type="text" placeholder="Description"></textarea>
+      </div>
+
+      <div class="input-field">
+        <label class="label-field" for="dueTo">Due To</label>
+        <div class="date-container">
+          <input style="width: 16rem; height: 0.2rem; margin: 0.30rem 0 0 0;
+          border: 0.15rem solid #14281f;padding: 0.8rem;" matInput [matDatepicker]="picker" [max]="oneYearAfterTodayDate" [min]="todayDate" placeholder="Due To" formControlName="dueTo" id="dueTo"> 
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        </div>
+        <mat-datepicker #picker></mat-datepicker>
+        <div *ngIf="form.get('dueTo')!.invalid && form.get('dueTo')!.errors &&
+          (form.get('dueTo')!.dirty || form.get('dueTo')!.touched)">
+          <small class="text-danger" *ngIf="form.get('dueTo')!.hasError('required')">
+            {{requiredMessage}}
+          </small>
+        </div>
+      </div>
+
+      <div class="input-field" *ngIf="mode === 'Add'">
+        <label class="label-field" for="subject">Subject</label>
+        <select class="input-select" formControlName="subject" name="subject" id="subject">
+          <option *ngFor="let subject of subjects" [value]="subject.id" class="input-option">
+            {{subject.name + ' ' + subject.studyGroup.number + subject.studyGroup.name}}
+          </option>
+        </select>
+        <div *ngIf="form.get('subject')!.invalid && form.get('subject')!.errors &&
+          (form.get('subject')!.dirty || form.get('subject')!.touched)">
+          <small class="text-danger" *ngIf="form.get('subject')!.hasError('required')">
+            {{requiredMessage}}
+          </small>
+        </div>
+      </div>
+
+      <div class="input-field" *ngIf="mode === 'Add'">
+        <label class="label-field" for="attachment">Attachment</label>
+        <input type="file" accept=".pdf,.txt" class="file-input" name="attachment" id="attachment"
+        (change)="onFileSelected($event)" #fileUpload>
+        <div class="subtitle">
+          {{fileName || "No file uploaded yet."}}
+            <button mat-mini-fab style="background-color: #14281f;" class="upload-btn"
+              (click)="fileUpload.click()">
+                <mat-icon>attach_file</mat-icon>
+            </button>
+        </div>
+      </div>
+
+    </form>
+    <div class="buttons">
+      <button class="cancel-btn" type="button" (click)="cancelModal()">
+        Cancel
+      </button>
+      <button class="submit-btn" type="button" (click)="submit()" [disabled]="!form.valid">
+        {{mode}}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="pre-modal" *ngIf="showSimilarityModal">
+  <div *ngIf="showSimilarityModal" class="modal">
+    <h1 class="title">Similarity Report</h1>
+    <p class="info-text" *ngIf="similarityReport === undefined">
+      Computing papers similarity... Please wait!
+    </p>
+
+    <div *ngIf="hasRoleStudent() && similarityReport && similarityReport.length !== 0 && similarityReport[0]">
+      <p class="text-danger info-text">
+        Oops... Looks like your paper is {{formatSimilarityRate(similarityReport[0].similarityRate)}}% similar to one of your colleagues.
+      </p>
+    </div>
+
+    <div *ngIf="hasRoleStudent() && similarityReport && similarityReport.length === 0">
+      <p class="info-text">Looks like your paper is original. Thumbs up!</p>
+    </div>
+
+    <div *ngIf="hasRoleTeacher() && similarityReport && similarityReport.length === 0">
+      <p class="info-text">Looks like all the papers are original. Thumbs up!</p>
+    </div>
+
+    <div *ngIf="hasRoleTeacher() && similarityReport && similarityReport.length !== 0">
+      <table mat-table [dataSource]="similarityReport" class="table mat-elevation-z8">
+        <ng-container>
+          <th rowspan="3">Student</th>
+          <th rowspan="3">Student</th>
+          <th></th>
+        </ng-container>
+        <ng-container matColumnDef="name1">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let element">{{element.student1.firstName + ' ' + element.student1.lastName}}</td>
+        </ng-container>
+        <ng-container matColumnDef="pin1">
+          <th mat-header-cell *matHeaderCellDef>PIN</th>
+          <td mat-cell *matCellDef="let element">{{element.student1.pin}}</td>
+        </ng-container>
+        <ng-container matColumnDef="download1">
+          <th mat-header-cell *matHeaderCellDef>Download</th>
+          <td mat-cell *matCellDef="let element" class="centered-cell">
+            <button mat-icon-button class="default-btn"
+              (click)="downloadAssignmentResponse(element.student1.filePath)">
+                <mat-icon>file_download</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="name2">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let element">{{element.student2.firstName + ' ' + element.student2.lastName}}</td>
+        </ng-container>
+        <ng-container matColumnDef="pin2">
+          <th mat-header-cell *matHeaderCellDef>PIN</th>
+          <td mat-cell *matCellDef="let element">{{element.student2.pin}}</td>
+        </ng-container>
+        <ng-container matColumnDef="download2">
+          <th mat-header-cell *matHeaderCellDef>Download</th>
+          <td mat-cell *matCellDef="let element" class="centered-cell">
+            <button mat-icon-button class="default-btn"
+              (click)="downloadAssignmentResponse(element.student2.filePath)">
+                <mat-icon>file_download</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="similarity">
+          <th mat-header-cell *matHeaderCellDef>Similarity</th>
+          <td mat-cell *matCellDef="let element">{{formatSimilarityRate(element.similarityRate)}}%</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+    
+    <div class="buttons">
+      <button class="cancel-btn" type="button" (click)="cancelSimilarityPopup()">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="pre-modal" *ngIf="showDeleteModal">
+  <div *ngIf="showDeleteModal" class="modal">
+    <h1 class="title">Delete confirmation</h1>
+    <p class="subtitle">Are you sure you want to delete this item?</p>
+    <p class="subtitle">This action will also take effect in the student responses referenced by this item.</p>
+    <div class="buttons">
+      <button class="cancel-btn" type="button" (click)="cancelDeleteModal()">
+        No
+      </button>
+      <button class="submit-btn" type="button" (click)="removeAssignment()">
+        Yes
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="pre-modal" *ngIf="showDeleteResponseModal">
+  <div *ngIf="showDeleteResponseModal" class="modal">
+    <h1 class="title">Delete confirmation</h1>
+    <p class="subtitle">Are you sure you want to delete this item?</p>
+    <div class="buttons">
+      <button class="cancel-btn" type="button" (click)="cancelDeleteResponseModal()">
+        No
+      </button>
+      <button class="submit-btn" type="button" (click)="removeAssignmentResponse()">
+        Yes
+      </button>
+    </div>
+  </div>
+</div>
