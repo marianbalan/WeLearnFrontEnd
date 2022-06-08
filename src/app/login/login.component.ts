@@ -1,3 +1,4 @@
+import { Role } from './../models/user-role.model';
 import { EventEmitterService } from './../services/event-emitter/event-emitter.service';
 import { Router } from '@angular/router';
 import { SessionServiceService } from './../services/session/session-service.service';
@@ -61,7 +62,19 @@ export class LoginComponent implements OnInit {
   }
 
   toHome(): void {
-    this.router.navigate(['/home']).then(() => {
+    let homeRoute = '/';
+    
+    if (this.sessionService.hasRoleStudent()) {
+      homeRoute = '/students/' + this.sessionService.getLoggedUserId()! + '/situation';
+    }
+    if (this.sessionService.hasRoleTeacher() || this.sessionService.hasRoleClassMaster()) {
+      homeRoute = '/subjects';
+    }
+    if (this.sessionService.hasRoleDirector()) {
+      homeRoute = '/teachers';
+    }
+
+    this.router.navigate([homeRoute]).then(() => {
       this.loginForm.reset();
     });
   }

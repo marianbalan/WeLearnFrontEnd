@@ -89,7 +89,7 @@
           <div class="row-container">
             <div [ngClass]="{ 'motivated': nonAttendance.motivated, 'non-attendance': hasMotivateNonAttendanceAccess() }" 
               *ngFor="let nonAttendance of element.nonAttendances" 
-              (click)="hasMotivateNonAttendanceAccess() ? updateNonAttendanceMotivatedStatus(nonAttendance.id, nonAttendance.motivated) : false">
+              (click)="openMotivateNonAttendanceModal(nonAttendance)">
               {{convertTimestampToLocaleDate(nonAttendance.date)}}
             </div>
           </div>
@@ -181,6 +181,21 @@
         No
       </button>
       <button class="submit-btn" type="button" (click)="addNonAttendance()">
+        Yes
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="pre-modal" *ngIf="showMotivateNonAttendanceModal">
+  <div *ngIf="showMotivateNonAttendanceModal" class="modal">
+    <h1 class="title">Nonattendance confirmation</h1>
+    <p class="subtitle">Are you sure you want to change the nonattendance status?<br></p>
+    <div class="buttons">
+      <button class="cancel-btn" type="button" (click)="cancelMotivateNonAttendanceModal()">
+        No
+      </button>
+      <button class="submit-btn" type="button" (click)="updateNonAttendanceMotivatedStatus()">
         Yes
       </button>
     </div>

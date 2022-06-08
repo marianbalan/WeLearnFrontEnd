@@ -118,9 +118,11 @@ export class SituationComponent implements OnInit {
     const averageScores = this.situation!.data.map(situation => situation.averageScore);
     const averageScoresLenght = averageScores.filter(x => x !== null && x !== undefined).length;
 
-    return (averageScores.reduce(
+    const averageScore = (averageScores.reduce(
         (partialSum, averageScore) => averageScore != null ? partialSum! + averageScore : partialSum
     )! / averageScoresLenght).toFixed(2);
+
+    return averageScore !== 'NaN' ? averageScore : '0';
   }
 
   private countTotalNonAttendances(): number {

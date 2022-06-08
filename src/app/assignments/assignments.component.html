@@ -155,7 +155,7 @@
                   (click)="downloadAssignmentResponse(assignment.responses[0].filePath!)">
                     <mat-icon>file_download</mat-icon>
                 </button>
-                <button *ngIf="assignment.responses.length !== 0" mat-icon-button class="delete-btn"
+                <button *ngIf="assignment.responses.length !== 0 && !assignment.closed" mat-icon-button class="delete-btn"
                   (click)="openDeleteResponseModal(assignment.responses[0])">
                     <mat-icon>delete</mat-icon>
                 </button>

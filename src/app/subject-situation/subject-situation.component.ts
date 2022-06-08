@@ -23,12 +23,14 @@ export class SubjectSituationComponent implements OnInit {
   private _subjectId: number | undefined;
   public subject: ISubjectViewModel | undefined;
   public situation: MatTableDataSource<ISubjectStuationViewModel> | undefined;
+  private _currentNonAttendance: INonAttendanceViewModel | undefined;
 
   public mode: string = 'grades';
   public modalMode: string = 'Add';
   public showModal: boolean = false;
   public showDeleteModal: boolean = false;
   public showNonAttendanceModal: boolean = false;
+  public showMotivateNonAttendanceModal: boolean = false;
 
   private _student: IUserViewModel | undefined;
   private _grade: IGradeViewModel | undefined;
@@ -173,26 +175,24 @@ export class SubjectSituationComponent implements OnInit {
     );
   }
 
-  public updateNonAttendanceMotivatedStatus(id: number, statusBefore: boolean): void {
-    let text: string = 'motivate';
-    if (statusBefore === true) {
-      text = 'unmotivate';
-    }
+  public updateNonAttendanceMotivatedStatus(): void {
+    const id = this._currentNonAttendance!.id;
+    const newStatus = !this._currentNonAttendance!.motivated;
 
-    if (confirm('Are you sure you want to ' + text + ' the selected non-attendance?')) {
-      this.situationService.updateNonAttendanceMotivatedStatus(id, !statusBefore)
-        .subscribe(
-          () => this.situation!.data.forEach(situation => {
+    this.situationService.updateNonAttendanceMotivatedStatus(id, newStatus)
+      .subscribe(
+        () => {
+          this.situation!.data.forEach(situation => {
             situation.nonAttendances.forEach(nonAttendance => {
               if (nonAttendance.id === id) {
-                nonAttendance.motivated = !statusBefore;
+                nonAttendance.motivated = newStatus;
                 this.totalUnmotivatedNonAttendances = this.countTotalUnmotivatedNonAttendances();
-                return;
               }
             })
-          })
-        );
-    }
+          });
+          this.cancelMotivateNonAttendanceModal();
+        }
+      );
   }
 
   public hasMotivateNonAttendanceAccess(): boolean {
@@ -356,6 +356,15 @@ export class SubjectSituationComponent implements OnInit {
 
   public cancelNonAttendanceModal(): void {
     this.showNonAttendanceModal = false;
+  }
+
+  public openMotivateNonAttendanceModal(nonAttendance: INonAttendanceViewModel): void {
+    this._currentNonAttendance = nonAttendance;
+    this.showMotivateNonAttendanceModal = true;
+  }
+
+  public cancelMotivateNonAttendanceModal(): void {
+    this.showMotivateNonAttendanceModal = false;
   }
 
 }
